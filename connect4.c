@@ -1,13 +1,13 @@
 #include "menu.h"
 
-int max_x, max_y, x, y;
+int maxx, maxy, x, y, choice = 0;
+WINDOW *menuWindow;
+char menuList[3][20] = {"New game", "Load saved game", "Quit"};
 
 int main() {
-  WINDOW *wnd;
-  Initialize(&wnd);
-
-  refresh();
-  getch();
+  Initialize();
+  getmaxyx(stdscr, maxy, maxx);
+  InitializeMenu();
   endwin();
   return 0;
 }
