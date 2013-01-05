@@ -15,6 +15,7 @@ void Initialize() {
   curs_set(0);
   keypad(stdscr, TRUE);
   start_color();
+  nodelay(stdscr, TRUE);
 }
 
 void InitializeMenu() {
@@ -35,6 +36,12 @@ void InitializeMenu() {
       DrawMenu(choice);
     }
 
+    if(i < strlen(s)) {
+      mvaddstr(maxy - 1, maxx - 1 - i, s);
+      napms(60);
+      i++;
+    }
+    
     refresh();
   }
 }
