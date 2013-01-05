@@ -1,13 +1,26 @@
 #include "menu.h"
 
-int maxx, maxy, x, y, choice = 0;
+int maxx, maxy, x, y, colorChoice1 = 0, colorChoice2 = 0;
 WINDOW *menuWindow;
-char menuList[3][20] = {"New game", "Load saved game", "Quit"};
+char menuList[3][20] = {"New game", "Load saved game", "Quit"},
+     players[2][30];
 
 int main() {
+  int chosen;
   Initialize();
   getmaxyx(stdscr, maxy, maxx);
-  InitializeMenu();
+  chosen = InitializeMenu();
+  switch(chosen) {
+    case 0:
+      PlayerSelect();
+      break;
+    case 1:
+    case 2:
+      Quit();
+      break;
+    default:
+      break;
+  }
   endwin();
   return 0;
 }
