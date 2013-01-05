@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#ifndef MENU_H
-#define MENU_H
+#ifndef CONNECT4_H
+#define CONNECT4_H
 
 extern char menuList[3][20], players[2][30];
 extern int maxx, maxy, colorChoice1, colorChoice2;
-extern WINDOW *menuWindow;
+extern WINDOW *board;
 
 void ErrorMessage(char *s);
 void Initialize();

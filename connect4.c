@@ -1,7 +1,7 @@
-#include "menu.h"
+#include "connect4.h"
 
 int maxx, maxy, x, y, colorChoice1 = 0, colorChoice2 = 0;
-WINDOW *menuWindow;
+WINDOW *board;
 char menuList[3][20] = {"New game", "Load saved game", "Quit"},
      players[2][30];
 

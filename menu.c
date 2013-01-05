@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "connect4.h"
 
 void ErrorMessage(char *s) {
   addstr(s);
@@ -75,6 +75,7 @@ void PlayerSelect() {
   getnstr(players[1], 30);
   clear();
   noecho();
+
   //Print Color Choice Menu for Player 1
   mvprintw(1, (maxx - strlen(msg1) - strlen(players[0])) / 2,
           "%s%s", msg1, players[0]);
@@ -93,6 +94,7 @@ void PlayerSelect() {
     }
     refresh();
   }
+
   //Print Color Choice Menu for Player 2
   mvprintw(6, (maxx - strlen(msg1) - strlen(players[1])) / 2,
           "%s%s", msg1, players[1]);
@@ -111,6 +113,8 @@ void PlayerSelect() {
     }
     refresh();
   }
+  colorChoice1++;
+  colorChoice2++;
 }
 
 void DrawPickColor(int y, int colorChoice) {
