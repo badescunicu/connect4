@@ -15,6 +15,8 @@ int InitializeMenu();
 void DrawMenu(int choice);
 void PlayerSelect();
 void DrawPickColor(int y, int colorChoice);
+void DrawBoardLayout();
+void DrawBoard(int boardState[8][9]);
 void Quit();
 
 

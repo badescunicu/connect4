@@ -15,7 +15,6 @@ void Initialize() {
   curs_set(0);
   keypad(stdscr, TRUE);
   start_color();
-  nodelay(stdscr, TRUE);
 }
 
 int InitializeMenu() {
@@ -23,6 +22,7 @@ int InitializeMenu() {
   int choice = 0;
   char *s = "Press SPACE or ENTER to choose the option";
   mvprintw(1, 0 , "Connect4");
+  nodelay(stdscr, TRUE);
   DrawMenu(choice);
   while(1) {
     c = getch();
@@ -76,7 +76,7 @@ void PlayerSelect() {
   clear();
   noecho();
 
-  //Print Color Choice Menu for Player 1
+  /* Print Color Choice Menu for Player 1 */
   mvprintw(1, (maxx - strlen(msg1) - strlen(players[0])) / 2,
           "%s%s", msg1, players[0]);
   DrawPickColor(3, colorChoice1);
@@ -95,7 +95,7 @@ void PlayerSelect() {
     refresh();
   }
 
-  //Print Color Choice Menu for Player 2
+  /* Print Color Choice Menu for Player 2 */
   mvprintw(6, (maxx - strlen(msg1) - strlen(players[1])) / 2,
           "%s%s", msg1, players[1]);
   DrawPickColor(8, colorChoice2);
@@ -139,6 +139,7 @@ void DrawPickColor(int y, int colorChoice) {
   init_pair(1, COLOR_RED, COLOR_BLACK);
   init_pair(2, COLOR_GREEN, COLOR_BLACK);
   init_pair(3, COLOR_BLUE, COLOR_BLACK);
+  init_pair(4, COLOR_YELLOW, COLOR_YELLOW);
   attrset(COLOR_PAIR(1));
   mvprintw(y, 7, "RED");
   attrset(COLOR_PAIR(2));

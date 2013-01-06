@@ -6,13 +6,14 @@ char menuList[3][20] = {"New game", "Load saved game", "Quit"},
      players[2][30];
 
 int main() {
-  int chosen;
+  int chosen, board_state[8][9];
   Initialize();
   getmaxyx(stdscr, maxy, maxx);
   chosen = InitializeMenu();
   switch(chosen) {
     case 0:
       PlayerSelect();
+      DrawBoardLayout();
       break;
     case 1:
     case 2:
