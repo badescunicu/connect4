@@ -2,6 +2,7 @@
 
 void DrawBoardLayout() {
   clear();
+  int c;
   int x, y, boardmaxx = 44, boardmaxy = 19;
   board = newwin(boardmaxy, boardmaxx, 4, 3);
   wattron(board, COLOR_PAIR(4));
@@ -26,8 +27,6 @@ void DrawBoardLayout() {
 
   refresh();
   wrefresh(board);
-  getch();
-
 }
 
 void DrawBoard(int board_state[8][9]) {
@@ -50,5 +49,34 @@ void DrawBoard(int board_state[8][9]) {
       wattrset(board, A_NORMAL);
       }
     }
+  }
+}
+
+/* Prints current time and time spent since the beginning of the game */
+void PrintTime() {
+    struct tm *cur_time;
+    time_t t;
+
+    t = time(NULL);
+    cur_time = localtime(&t);
+    mvprintw(4, maxx - 20, "%02d:%02d:%02d", cur_time -> tm_hour,
+             cur_time -> tm_min, cur_time -> tm_sec);
+}
+
+void PrintScore() {
+  mvprintw(6, maxx - 20, "%s VS %s", players[0], players[1]);
+  mvprintw(8, maxx - 20, "%s: %d", players[0], curPointsPlayer1);
+  mvprintw(9, maxx - 20, "%s: %d", players[1], curPointsPlayer2);
+}
+
+void Play() {
+  int c;
+  nodelay(stdscr, TRUE);
+  while(1) {
+  c = getch();
+  PrintTime();
+  PrintScore();
+    if(c == 'q')
+      break;
   }
 }

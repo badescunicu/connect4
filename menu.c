@@ -113,8 +113,10 @@ void PlayerSelect() {
     }
     refresh();
   }
-  colorChoice1++;
-  colorChoice2++;
+
+  /* Increase colorChoice so that would match the COLOR_PAIR */
+  colorChoice1 += 3;
+  colorChoice2 += 3;
 }
 
 void DrawPickColor(int y, int colorChoice) {
@@ -140,6 +142,10 @@ void DrawPickColor(int y, int colorChoice) {
   init_pair(2, COLOR_GREEN, COLOR_BLACK);
   init_pair(3, COLOR_BLUE, COLOR_BLACK);
   init_pair(4, COLOR_YELLOW, COLOR_YELLOW);
+  init_pair(5, COLOR_RED, COLOR_RED);
+  init_pair(6, COLOR_GREEN, COLOR_GREEN);
+  init_pair(7, COLOR_BLUE, COLOR_BLUE);
+
   attrset(COLOR_PAIR(1));
   mvprintw(y, 7, "RED");
   attrset(COLOR_PAIR(2));
@@ -157,7 +163,3 @@ void Quit() {
   refresh();
   napms(1500);
 }
-
-
-
-

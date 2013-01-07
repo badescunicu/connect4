@@ -2,3 +2,4 @@ colorChoice: 1-red, 2-green, 3-blue
 menuChoice: 0-new, 1-load, 2-quit
 
 init_pair: 1-red text, 2-green text, 3-blue text, 4-yellow block
+           5-red block, 6- green block, 7-blue block

@@ -1,6 +1,7 @@
 #include "connect4.h"
 
-int maxx, maxy, x, y, colorChoice1 = 0, colorChoice2 = 0;
+int maxx, maxy, x, y, colorChoice1 = 0, colorChoice2 = 0,
+    curPointsPlayer1, curPointsPlayer2, totalPointsPlayer1, totalPointsPlayer2;
 WINDOW *board;
 char menuList[3][20] = {"New game", "Load saved game", "Quit"},
      players[2][30];
@@ -11,12 +12,13 @@ int main() {
   getmaxyx(stdscr, maxy, maxx);
   chosen = InitializeMenu();
   switch(chosen) {
-    case 0:
+    case 0: /* New game */
       PlayerSelect();
       DrawBoardLayout();
+      Play();
       break;
-    case 1:
-    case 2:
+    case 1: /* Load saved game */
+    case 2: /* Quit */
       Quit();
       break;
     default:
