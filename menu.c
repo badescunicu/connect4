@@ -61,11 +61,12 @@ void DrawMenu(int choice) {
   }
 }
 
+/* Select name and color for both players */
 void PlayerSelect() {
+  /* Initialize start_time after hitting new game" */
   char *msg1 = "Choose your color, ";
-  int c;
+  int c, i;
   nodelay(stdscr, FALSE);
-  addstr("test STring");
   clear();
   echo();
   mvprintw(maxy / 4, maxx / 6, "Enter name for player 1: ");
@@ -73,24 +74,34 @@ void PlayerSelect() {
   getnstr(p[0].name, 30);
   mvprintw(maxy / 4 + 2, maxx / 6, "Enter name for player 2: ");
   getnstr(p[1].name, 30);
+
+  /* Check if player is in database */
+  for(i = 0; i <= 1; i++) {
+    if(SearchPlayer(p[i]))
+      p[i].score = GetPlayerScore(p[i]);
+    else {
+      p[i].score = 0;
+      AddPlayer(p[i]);
+    }
+  }
   clear();
   noecho();
 
   /* Print Color Choice Menu for Player 1 */
   mvprintw(1, (maxx - strlen(msg1) - strlen(p[0].name)) / 2,
           "%s%s", msg1, p[0].name);
-  DrawPickColor(3, colorChoice1);
+  DrawPickColor(3, colorChoice[1]);
   while(1) {
     c = getch();
     if(c == ' ' || c == 10)
       break;
     if(c == KEY_LEFT) {
-      colorChoice1 = (colorChoice1 + 2 ) % 3;
-      DrawPickColor(3, colorChoice1);
+      colorChoice[1] = (colorChoice[1] + 2 ) % 3;
+      DrawPickColor(3, colorChoice[1]);
     }
     if(c == KEY_RIGHT) {
-      colorChoice1 = (colorChoice1 + 1) % 3;
-      DrawPickColor(3, colorChoice1);
+      colorChoice[1] = (colorChoice[1] + 1) % 3;
+      DrawPickColor(3, colorChoice[1]);
     }
     refresh();
   }
@@ -98,25 +109,25 @@ void PlayerSelect() {
   /* Print Color Choice Menu for Player 2 */
   mvprintw(6, (maxx - strlen(msg1) - strlen(p[1].name)) / 2,
           "%s%s", msg1, p[1].name);
-  DrawPickColor(8, colorChoice2);
+  DrawPickColor(8, colorChoice[2]);
   while(1) {
     c = getch();
     if(c == ' ' || c == 10)
       break;
     if(c == KEY_LEFT) {
-      colorChoice2 = (colorChoice2 + 2 ) % 3;
-      DrawPickColor(8, colorChoice2);
+      colorChoice[2] = (colorChoice[2] + 2 ) % 3;
+      DrawPickColor(8, colorChoice[2]);
     }
     if(c == KEY_RIGHT) {
-      colorChoice2 = (colorChoice2 + 1) % 3;
-      DrawPickColor(8, colorChoice2);
+      colorChoice[2] = (colorChoice[2] + 1) % 3;
+      DrawPickColor(8, colorChoice[2]);
     }
     refresh();
   }
 
   /* Increase colorChoice so that would match the COLOR_PAIR */
-  colorChoice1 += 3;
-  colorChoice2 += 3;
+  colorChoice[1] += 5;
+  colorChoice[2] += 5;
 }
 
 void DrawPickColor(int y, int colorChoice) {

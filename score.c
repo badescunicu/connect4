@@ -56,7 +56,7 @@ void UpdatePlayer(Player p) {
   fclose(f);
 }
 
-void PrintFile() {
+void PrintDatabase() {
   f = fopen("scoreDatabase.bin", "rb");
   Player p;
   while((fread(&p, sizeof(p), 1, f)) == 1) {
