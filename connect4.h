@@ -5,9 +5,16 @@
 #ifndef CONNECT4_H
 #define CONNECT4_H
 
+typedef struct {
+  char name[30];
+  int score;
+}Player;
+
+extern FILE *f;
+extern Player p[2];
 extern char menuList[3][20], players[2][30];
 extern int maxx, maxy, colorChoice1, colorChoice2,
-  curPointsPlayer1, curPointsPlayer2, totalPointsPlayer1, totalPointsPlayer2;
+  curPointsPlayer1, curPointsPlayer2;
 extern WINDOW *board;
 
 void ErrorMessage(char *s);

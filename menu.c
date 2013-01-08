@@ -70,15 +70,15 @@ void PlayerSelect() {
   echo();
   mvprintw(maxy / 4, maxx / 6, "Enter name for player 1: ");
   refresh();
-  getnstr(players[0], 30);
+  getnstr(p[0].name, 30);
   mvprintw(maxy / 4 + 2, maxx / 6, "Enter name for player 2: ");
-  getnstr(players[1], 30);
+  getnstr(p[1].name, 30);
   clear();
   noecho();
 
   /* Print Color Choice Menu for Player 1 */
-  mvprintw(1, (maxx - strlen(msg1) - strlen(players[0])) / 2,
-          "%s%s", msg1, players[0]);
+  mvprintw(1, (maxx - strlen(msg1) - strlen(p[0].name)) / 2,
+          "%s%s", msg1, p[0].name);
   DrawPickColor(3, colorChoice1);
   while(1) {
     c = getch();
@@ -96,8 +96,8 @@ void PlayerSelect() {
   }
 
   /* Print Color Choice Menu for Player 2 */
-  mvprintw(6, (maxx - strlen(msg1) - strlen(players[1])) / 2,
-          "%s%s", msg1, players[1]);
+  mvprintw(6, (maxx - strlen(msg1) - strlen(p[1].name)) / 2,
+          "%s%s", msg1, p[1].name);
   DrawPickColor(8, colorChoice2);
   while(1) {
     c = getch();

@@ -64,9 +64,9 @@ void PrintTime() {
 }
 
 void PrintScore() {
-  mvprintw(6, maxx - 20, "%s VS %s", players[0], players[1]);
-  mvprintw(8, maxx - 20, "%s: %d", players[0], curPointsPlayer1);
-  mvprintw(9, maxx - 20, "%s: %d", players[1], curPointsPlayer2);
+  mvprintw(6, maxx - 20, "%s VS %s", p[0].name, p[1].name);
+  mvprintw(8, maxx - 20, "%s: %d", p[0].name, curPointsPlayer1);
+  mvprintw(9, maxx - 20, "%s: %d", p[1].name, curPointsPlayer2);
 }
 
 void Play() {
