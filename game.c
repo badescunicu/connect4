@@ -2,7 +2,6 @@
 
 void DrawBoardLayout() {
   clear();
-  int b[8][9];
 
   int c;
   int x, y, boardmaxx = 44, boardmaxy = 19;
@@ -45,6 +44,9 @@ void DrawBoard() {
           case 2:
             wattrset(board, COLOR_PAIR(colorChoice[2]));
             break;
+          case 3:
+            wattrset(board, COLOR_PAIR(8));
+            break;
         }
       mvwaddstr(board, y, x, "****");
       mvwaddstr(board, y + 1, x, "****");
@@ -57,12 +59,15 @@ void DrawBoard() {
       }
     }
   }
+  refresh();
+  wrefresh(board);
 }
 
 
 
 void Play() {
-  int c, availableRow, colChosen = 0, color = colorChoice[1], turn = 1;
+  int c, availableRow, colChosen = 0, color = colorChoice[1];
+  turn = 1;
   nodelay(stdscr, TRUE);
   while(1) {
     c = getch();
@@ -76,10 +81,12 @@ void Play() {
         AnimatePiece(turn, colChosen);
         boardState[availableRow][colChosen + 1] = turn;
         DrawBoard(boardState);
-        refresh();
-        wrefresh(board);
-        if(CheckEndOfGameFromPosition(availableRow, colChosen + 1))
-          mvprintw(0, 0, "Player %d won!", turn);
+        if(CheckEndOfGameFromPosition(availableRow, colChosen + 1)) {
+          mvprintw(0, 0, "%s won!", p[turn - 1].name);
+          curPointsPlayer[turn - 1]++;
+          PrintScore();
+          BlinkWinningPositions();
+        }
         turn = 3 - turn;
         color = colorChoice[turn];
       }
@@ -99,20 +106,26 @@ void Play() {
 
 int CheckEndOfGameFromPosition(int row, int col) {
   int ok = 0, count = 0, i = row, j = col;
+  InitializeWinningPositions();
 
-  /* check vertical */
+   /* check vertical */
   while(boardState[i][j] == boardState[row][col] && i <= 6) {
     count++;
+    winningPositions[0][count - 1] = i;
+    winningPositions[1][count - 1] = j;
     i++;
   }
-  if(count >= 4)
+  if(count >= 4) {
     return 1;
+  }
   
   /* check horizontal */
-  count = 0;
-  i = row; j = col;
+  count = 0; i = row; j = col;
+  InitializeWinningPositions();
   while(boardState[i][j] == boardState[row][col] && j >= 1) {
     count++;
+    winningPositions[0][count - 1] = i;
+    winningPositions[1][count - 1] = j;
     j--;
   }
   j = col + 1;
@@ -120,15 +133,17 @@ int CheckEndOfGameFromPosition(int row, int col) {
     count++;
     j++;
   }
-  if(count >= 4)
+  if(count >= 4) {
     return 1;
+  }
 
   /* check first diagonal */
-  count = 0;
-  i = row;
-  j = col;
+  count = 0; i = row; j = col;
+  InitializeWinningPositions();
   while(boardState[i][j] == boardState[row][col] && j <=7 && i >= 1) {
     count++;
+    winningPositions[0][count - 1] = i;
+    winningPositions[1][count - 1] = j;
     j++;
     i--;
   }
@@ -136,16 +151,22 @@ int CheckEndOfGameFromPosition(int row, int col) {
   j = col - 1;
   while(boardState[i][j] == boardState[row][col] && j >=1 && i <= 6) {
     count++;
+    winningPositions[0][count - 1] = i;
+    winningPositions[1][count - 1] = j;
     j--;
     i++;
   }
-  if(count >= 4)
+  if(count >= 4) {
     return 1;
+  }
 
   /* check second diagonal */
   count = 0; i = row; j = col;
+  InitializeWinningPositions();
   while(boardState[i][j] == boardState[row][col] && j >=1 && i >= 1) {
     count++;
+    winningPositions[0][count - 1] = i;
+    winningPositions[1][count - 1] = j;
     j--;
     i--;
   }
@@ -153,18 +174,46 @@ int CheckEndOfGameFromPosition(int row, int col) {
   j = col + 1;
   while(boardState[i][j] == boardState[row][col] && j <= 7 && i <= 6) {
     count++;
+    winningPositions[0][count - 1] = i;
+    winningPositions[1][count - 1] = j;
     j++;
     i++;
   }
-  if(count >= 4)
+  if(count >= 4) {
     return 1;
+  }
   
-
   return 0;
 }
-  
-  
 
+void InitializeWinningPositions() {
+  int i, j;
+  for(i = 0; i < 2; i++)
+   for(j = 0; j < 7; j++)
+     winningPositions[i][j] = 0;
+}
+
+void BlinkWinningPositions() {
+  int i, blinked = 0;
+  while(blinked < 5) {
+    i = 0;
+    while(i < 7 && winningPositions[0][i] != 0) {
+      boardState[winningPositions[0][i]][winningPositions[1][i]] = 3;
+      i++;
+    }
+    DrawBoard(boardState);
+    napms(150);
+    i = 0;
+    while(i < 7 && winningPositions[0][i] != 0) {
+      boardState[winningPositions[0][i]][winningPositions[1][i]] = turn;
+      i++;
+    }
+    DrawBoard(boardState);
+    napms(120);
+    
+    blinked++;
+  }
+}
 
 void AnimatePiece(int turn, int colChosen) {
   int i = 1, availableRow = GetAvailableRow(colChosen + 1);
@@ -176,8 +225,6 @@ void AnimatePiece(int turn, int colChosen) {
     napms(120);
     boardState[i][colChosen + 1] = 0;
     DrawBoard(boardState);
-    refresh();
-    wrefresh(board);
     i++;
   }
 }
@@ -214,7 +261,8 @@ void PrintTime() {
 
     t = time(NULL);
     cur_time = localtime(&t);
-    mvprintw(4, maxx - 20, "%02d:%02d:%02d", cur_time -> tm_hour,
+    mvprintw(4, 55, "Local Time:");
+    mvprintw(5, 55, "%02d:%02d:%02d", cur_time -> tm_hour,
              cur_time -> tm_min, cur_time -> tm_sec);
 
     dif =  t - start_time;
@@ -223,21 +271,39 @@ void PrintTime() {
     minutes = dif % 60;
     hours = dif / 60;
 
-    mvprintw(14, maxx - 20, "%02d:%02d:%02d", hours, minutes, seconds);
+    mvprintw(17, 55, "In-game time:");
+    mvprintw(18, 55, "%02d:%02d:%02d", hours, minutes, seconds);
 }
 
 void PrintScore() {
-  mvprintw(6, maxx - 20, "%s VS %s", p[0].name, p[1].name);
+  switch(turn) {
+    case 1:
+      mvprintw(7, 56 + strlen(p[0].name) + 
+               strlen(" vs ") + strlen(p[1].name), " ");
+      attron(COLOR_PAIR(colorChoice[1]));
+      mvprintw(7, 53, "*");
+      attroff(COLOR_PAIR(colorChoice[1]));
+      break;
+    case 2:
+      mvprintw(7, 53, " ");
+      attron(COLOR_PAIR(colorChoice[2]));
+      mvprintw(7, 56 + strlen(p[0].name) + 
+               strlen(" vs ") + strlen(p[1].name), "*");
+      attroff(COLOR_PAIR(colorChoice[2]));
+      break;
+  }
+
+
+  attron(A_BOLD);
+  mvprintw(7, 55, "%s VS %s", p[0].name, p[1].name);
+  attroff(A_BOLD);
   /* print current score */
-  mvprintw(8, maxx - 20, "%s: %d", p[0].name, curPointsPlayer1);
-  mvprintw(9, maxx - 20, "%s: %d", p[1].name, curPointsPlayer2);
+  mvprintw(9, 55, "Current points:");
+  mvprintw(10, 55, "%s: %d", p[0].name, curPointsPlayer[0]);
+  mvprintw(11, 55, "%s: %d", p[1].name, curPointsPlayer[1]);
 
   /* print total score for each player */
-  mvprintw(11, maxx - 20, "%s: %d", p[0].name, p[0].score);
-  mvprintw(12, maxx - 20, "%s: %d", p[1].name, p[1].score);
+  mvprintw(13, 55, "Total points:");
+  mvprintw(14, 55, "%s: %d", p[0].name, p[0].score);
+  mvprintw(15, 55, "%s: %d", p[1].name, p[1].score);
 }
-
-
-
-
-

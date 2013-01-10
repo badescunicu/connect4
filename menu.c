@@ -152,10 +152,11 @@ void DrawPickColor(int y, int colorChoice) {
   init_pair(1, COLOR_RED, COLOR_BLACK);
   init_pair(2, COLOR_GREEN, COLOR_BLACK);
   init_pair(3, COLOR_BLUE, COLOR_BLACK);
-  init_pair(4, COLOR_YELLOW, COLOR_YELLOW);
+  init_pair(4, COLOR_MAGENTA, COLOR_MAGENTA);
   init_pair(5, COLOR_RED, COLOR_RED);
   init_pair(6, COLOR_GREEN, COLOR_GREEN);
   init_pair(7, COLOR_BLUE, COLOR_BLUE);
+  init_pair(8, COLOR_WHITE, COLOR_WHITE);
 
   attrset(COLOR_PAIR(1));
   mvprintw(y, 7, "RED");

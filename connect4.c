@@ -3,8 +3,8 @@
 FILE *f;
 Player p[2];
 WINDOW *board;
-int maxx, maxy, boardState[8][9],  colorChoice[3] = {0},
-    curPointsPlayer1, curPointsPlayer2;
+int maxx, maxy, boardState[8][9], winningPositions[2][7], 
+    colorChoice[3] = {0}, curPointsPlayer[2], turn;
 char menuList[3][20] = {"New game", "Load saved game", "Quit"},
      players[2][30];
 time_t start_time;

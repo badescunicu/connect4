@@ -14,7 +14,7 @@ extern FILE *f;
 extern Player p[2];
 extern char menuList[3][20], players[2][30];
 extern int maxx, maxy, boardState[8][9], colorChoice[3],
-  curPointsPlayer1, curPointsPlayer2;
+  winningPositions[2][7], curPointsPlayer[2], turn;
 extern WINDOW *board;
 extern time_t start_time;
 
@@ -36,6 +36,8 @@ void PreviewPiece(int row, int colChosen, int color);
 int GetAvailableRow(int col);
 void AnimatePiece(int turn, int colChosen);
 int CheckEndOfGameFromPosition(int row, int col);
+void InitializeWinningPositions();
+void BlinkWinningPositions();
 
 /* Score database functions */
 void AddPlayer(Player p);
