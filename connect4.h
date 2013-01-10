@@ -38,6 +38,7 @@ void AnimatePiece(int turn, int colChosen);
 int CheckEndOfGameFromPosition(int row, int col);
 void InitializeWinningPositions();
 void BlinkWinningPositions();
+int Pause();
 
 /* Score database functions */
 void AddPlayer(Player p);

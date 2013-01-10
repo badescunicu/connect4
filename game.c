@@ -75,6 +75,10 @@ void Play() {
     PrintScore();
     if(c == 'q')
       break;
+    if(c == 'p') {
+      int diff = Pause();
+      start_time += diff;
+    }
     if(c == ' ' || c == 10) {
       availableRow = GetAvailableRow(colChosen + 1);
       if(availableRow > 0) {
@@ -131,6 +135,8 @@ int CheckEndOfGameFromPosition(int row, int col) {
   j = col + 1;
   while(boardState[i][j] == boardState[row][col] && j <= 7) {
     count++;
+    winningPositions[0][count - 1] = i;
+    winningPositions[1][count - 1] = j;
     j++;
   }
   if(count >= 4) {
@@ -257,9 +263,9 @@ int GetAvailableRow(int col) {
 void PrintTime() {
     struct tm *cur_time;
     time_t t, dif;
+    t = time(NULL);
     int hours, minutes, seconds;
 
-    t = time(NULL);
     cur_time = localtime(&t);
     mvprintw(4, 55, "Local Time:");
     mvprintw(5, 55, "%02d:%02d:%02d", cur_time -> tm_hour,
@@ -306,4 +312,22 @@ void PrintScore() {
   mvprintw(13, 55, "Total points:");
   mvprintw(14, 55, "%s: %d", p[0].name, p[0].score);
   mvprintw(15, 55, "%s: %d", p[1].name, p[1].score);
+}
+
+int Pause() {
+  int c;
+  time_t start_pause = time(NULL), end_pause;
+  char *msg = "GAME PAUSED ---> PRESS p FOR RESUMING THE GAME",
+      *msg2 = "                                              ";
+  mvprintw(0, (maxx - strlen(msg)) / 2, "%s", msg);
+  while(1) {
+    c = getch();
+    if(c == 'p') {
+      end_pause = time(NULL);
+      mvprintw(0, (maxx - strlen(msg2)) / 2, "%s", msg2);
+      break;
+    }
+  }
+  int diff = end_pause - start_pause;
+  return diff;
 }
