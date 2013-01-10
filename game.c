@@ -73,23 +73,13 @@ void Play() {
     if(c == ' ' || c == 10) {
       availableRow = GetAvailableRow(colChosen + 1);
       if(availableRow > 0) {
-        int i = 1;
-        while(i < availableRow) {
-          boardState[i][colChosen + 1] = turn;
-          DrawBoard(boardState);
-          refresh();
-          wrefresh(board);
-          napms(120);
-          boardState[i][colChosen + 1] = 0;
-          DrawBoard(boardState);
-          refresh();
-          wrefresh(board);
-          i++;
-        }
+        AnimatePiece(turn, colChosen);
         boardState[availableRow][colChosen + 1] = turn;
         DrawBoard(boardState);
         refresh();
         wrefresh(board);
+        if(CheckEndOfGameFromPosition(availableRow, colChosen + 1))
+          mvprintw(0, 0, "Player %d won!", turn);
         turn = 3 - turn;
         color = colorChoice[turn];
       }
@@ -104,6 +94,91 @@ void Play() {
       colChosen = (colChosen + 1) % 7;
       PreviewPiece(2, colChosen, color);
     }
+  }
+}
+
+int CheckEndOfGameFromPosition(int row, int col) {
+  int ok = 0, count = 0, i = row, j = col;
+
+  /* check vertical */
+  while(boardState[i][j] == boardState[row][col] && i <= 6) {
+    count++;
+    i++;
+  }
+  if(count >= 4)
+    return 1;
+  
+  /* check horizontal */
+  count = 0;
+  i = row; j = col;
+  while(boardState[i][j] == boardState[row][col] && j >= 1) {
+    count++;
+    j--;
+  }
+  j = col + 1;
+  while(boardState[i][j] == boardState[row][col] && j <= 7) {
+    count++;
+    j++;
+  }
+  if(count >= 4)
+    return 1;
+
+  /* check first diagonal */
+  count = 0;
+  i = row;
+  j = col;
+  while(boardState[i][j] == boardState[row][col] && j <=7 && i >= 1) {
+    count++;
+    j++;
+    i--;
+  }
+  i = row + 1;
+  j = col - 1;
+  while(boardState[i][j] == boardState[row][col] && j >=1 && i <= 6) {
+    count++;
+    j--;
+    i++;
+  }
+  if(count >= 4)
+    return 1;
+
+  /* check second diagonal */
+  count = 0; i = row; j = col;
+  while(boardState[i][j] == boardState[row][col] && j >=1 && i >= 1) {
+    count++;
+    j--;
+    i--;
+  }
+  i = row + 1;
+  j = col + 1;
+  while(boardState[i][j] == boardState[row][col] && j <= 7 && i <= 6) {
+    count++;
+    j++;
+    i++;
+  }
+  if(count >= 4)
+    return 1;
+  
+
+  return 0;
+}
+  
+  
+
+
+void AnimatePiece(int turn, int colChosen) {
+  int i = 1, availableRow = GetAvailableRow(colChosen + 1);
+  while(i < availableRow) {
+    boardState[i][colChosen + 1] = turn;
+    DrawBoard(boardState);
+    refresh();
+    wrefresh(board);
+    napms(120);
+    boardState[i][colChosen + 1] = 0;
+    DrawBoard(boardState);
+    refresh();
+    wrefresh(board);
+    i++;
   }
 }
 

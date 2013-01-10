@@ -34,6 +34,8 @@ void PrintScore();
 void Play();
 void PreviewPiece(int row, int colChosen, int color);
 int GetAvailableRow(int col);
+void AnimatePiece(int turn, int colChosen);
+int CheckEndOfGameFromPosition(int row, int col);
 
 /* Score database functions */
 void AddPlayer(Player p);
