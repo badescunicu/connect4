@@ -18,6 +18,7 @@ extern int maxx, maxy, boardState[8][9], colorChoice[3],
 extern WINDOW *board;
 extern time_t start_time;
 
+/* Menu functions */
 void ErrorMessage(char *s);
 void Initialize();
 int InitializeMenu();
@@ -25,14 +26,16 @@ void DrawMenu(int choice);
 void PlayerSelect();
 void DrawPickColor(int y, int colorChoice);
 
+/* Gameplay functions */
 void DrawBoardLayout();
 void DrawBoard();
 void PrintTime();
 void PrintScore();
 void Play();
-void PreviewPiece(int colChosen, int color);
+void PreviewPiece(int row, int colChosen, int color);
 int GetAvailableRow(int col);
 
+/* Score database functions */
 void AddPlayer(Player p);
 int SearchPlayer(Player p);
 int GetPlayerScore(Player p);

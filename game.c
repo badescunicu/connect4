@@ -50,6 +50,11 @@ void DrawBoard() {
       mvwaddstr(board, y + 1, x, "****");
       wattrset(board, A_NORMAL);
       }
+      else {
+        wattrset(board, COLOR_PAIR(1));
+        mvwaddstr(board, y, x, "    ");
+        mvwaddstr(board, y + 1, x, "    ");
+      }
     }
   }
 }
@@ -68,6 +73,19 @@ void Play() {
     if(c == ' ' || c == 10) {
       availableRow = GetAvailableRow(colChosen + 1);
       if(availableRow > 0) {
+        int i = 1;
+        while(i < availableRow) {
+          boardState[i][colChosen + 1] = turn;
+          DrawBoard(boardState);
+          refresh();
+          wrefresh(board);
+          napms(120);
+          boardState[i][colChosen + 1] = 0;
+          DrawBoard(boardState);
+          refresh();
+          wrefresh(board);
+          i++;
+        }
         boardState[availableRow][colChosen + 1] = turn;
         DrawBoard(boardState);
         refresh();
@@ -77,31 +95,31 @@ void Play() {
       }
     }
 
-    PreviewPiece(colChosen, color);
+    PreviewPiece(2, colChosen, color);
     if(c == KEY_LEFT) {
       colChosen = (colChosen + 6) % 7;
-      PreviewPiece(colChosen, color);
+      PreviewPiece(2, colChosen, color);
     }
     if(c == KEY_RIGHT) {
       colChosen = (colChosen + 1) % 7;
-      PreviewPiece(colChosen, color);
+      PreviewPiece(2, colChosen, color);
     }
   }
 }
 
 /* Display a piece above the board */
-void PreviewPiece(colChosen, color) {
+void PreviewPiece(int row, int colChosen, int color) {
   int i;
   for(i = 0; i < 7; i++) {
     if(i == colChosen) {
       attron(COLOR_PAIR(color));
-      mvprintw(2, 5 + 6 * i, "****");
-      mvprintw(3, 5 + 6 * i, "****");
+      mvprintw(row, 5 + 6 * i, "****");
+      mvprintw(row + 1, 5 + 6 * i, "****");
       attroff(COLOR_PAIR(color));
     }
     else {
-      mvprintw(2, 5 + 6 * i, "    ");
-      mvprintw(3, 5 + 6 * i, "    ");
+      mvprintw(row, 5 + 6 * i, "    ");
+      mvprintw(row + 1, 5 + 6 * i, "    ");
     }
   }
 }
