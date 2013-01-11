@@ -311,8 +311,8 @@ void PrintTime() {
     int hours, minutes, seconds;
 
     cur_time = localtime(&t);
-    mvprintw(4, 55, "Local Time:");
-    mvprintw(5, 55, "%02d:%02d:%02d", cur_time -> tm_hour,
+    mvprintw(2, 55, "Local Time:");
+    mvprintw(3, 55, "%02d:%02d:%02d", cur_time -> tm_hour,
              cur_time -> tm_min, cur_time -> tm_sec);
 
     dif =  t - start_time;
@@ -321,23 +321,23 @@ void PrintTime() {
     minutes = dif % 60;
     hours = dif / 60;
 
-    mvprintw(17, 55, "In-game time:");
-    mvprintw(18, 55, "%02d:%02d:%02d", hours, minutes, seconds);
+    mvprintw(15, 55, "In-game time:");
+    mvprintw(16, 55, "%02d:%02d:%02d", hours, minutes, seconds);
 }
 
 void PrintScore() {
   switch(turn) {
     case 1:
-      mvprintw(7, 56 + strlen(p[0].name) + 
+      mvprintw(5, 56 + strlen(p[0].name) + 
                strlen(" vs ") + strlen(p[1].name), " ");
       attron(COLOR_PAIR(colorChoice[1]));
-      mvprintw(7, 53, "*");
+      mvprintw(5, 53, "*");
       attroff(COLOR_PAIR(colorChoice[1]));
       break;
     case 2:
-      mvprintw(7, 53, " ");
+      mvprintw(5, 53, " ");
       attron(COLOR_PAIR(colorChoice[2]));
-      mvprintw(7, 56 + strlen(p[0].name) + 
+      mvprintw(5, 56 + strlen(p[0].name) + 
                strlen(" vs ") + strlen(p[1].name), "*");
       attroff(COLOR_PAIR(colorChoice[2]));
       break;
@@ -345,23 +345,22 @@ void PrintScore() {
 
 
   attron(A_BOLD);
-  mvprintw(7, 55, "%s VS %s", p[0].name, p[1].name);
+  mvprintw(5, 55, "%s VS %s", p[0].name, p[1].name);
   attroff(A_BOLD);
   /* print current score */
-  mvprintw(9, 55, "Current points:");
-  mvprintw(10, 55, "%s: %d", p[0].name, curPointsPlayer[0]);
-  mvprintw(11, 55, "%s: %d", p[1].name, curPointsPlayer[1]);
+  mvprintw(7, 55, "Current points:");
+  mvprintw(8, 55, "%s: %d", p[0].name, curPointsPlayer[0]);
+  mvprintw(9, 55, "%s: %d", p[1].name, curPointsPlayer[1]);
 
   /* print total score for each player */
-  mvprintw(13, 55, "Total points:");
-  mvprintw(14, 55, "%s: %d", p[0].name, p[0].score);
-  mvprintw(15, 55, "%s: %d", p[1].name, p[1].score);
-  mvprintw(17, 55, "Key bindings:");
-  mvprintw(18, 55, "q-quit, s-save");
-  mvprintw(19, 55, "Movement:");
-  mvprintw(20, 55, "LEFT: a / <-");
-  mvprintw(21, 55, "RIGHT: d / ->");
-  mvprintw(22, 55, "ACTION: SPACE / ENTER");
+  mvprintw(11, 55, "Total points:");
+  mvprintw(12, 55, "%s: %d", p[0].name, p[0].score);
+  mvprintw(13, 55, "%s: %d", p[1].name, p[1].score);
+  mvprintw(18, 55, "Key bindings:");
+  mvprintw(19, 55, "LEFT: a / <-");
+  mvprintw(20, 55, "RIGHT: d / ->");
+  mvprintw(21, 55, "ACTION: SPACE / ENTER");
+  mvprintw(22, 55, "SAVE: s   QUIT: q");
 
 }
 
