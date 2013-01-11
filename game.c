@@ -79,6 +79,8 @@ void Play() {
       }while(ch != 'y' && ch != 'n');
 
       if(ch == 'y') {
+        UpdatePlayer(p[0]);
+        UpdatePlayer(p[1]);
         Quit();
         break;
       }
@@ -87,13 +89,16 @@ void Play() {
         DrawBoard();
       }
     }
+
     if(c == 'p') {
       int diff = Pause();
       start_time += diff;
     }
+
     if(c == 's') {
       SaveGame();
     }
+
     if(c == ' ' || c == 10) {
       availableRow = GetAvailableRow(colChosen + 1);
       if(availableRow > 0) {
@@ -106,11 +111,14 @@ void Play() {
           sprintf(msg, "%s has won!\n Do you want to play again?\n YES(y)/NO(n)",
                   p[turn - 1].name);
           curPointsPlayer[turn - 1]++;
+          p[turn - 1].score++;
           PrintScore();
           BlinkWinningPositions();
           DrawPrompt(msg);
           while((ch = getch()) != 'y' && ch != 'n');
           if(ch == 'n') {
+            UpdatePlayer(p[0]);
+            UpdatePlayer(p[1]);
             Quit();
             break;
           }
@@ -122,6 +130,13 @@ void Play() {
         }
         turn = 3 - turn;
         color = colorChoice[turn];
+        if(availableRow == 1) {
+          colsFull++;
+          if(colsFull == 7) {
+            colsFull = 0;
+            GameIsDraw();
+          }
+        }
       }
     }
 
@@ -341,6 +356,13 @@ void PrintScore() {
   mvprintw(13, 55, "Total points:");
   mvprintw(14, 55, "%s: %d", p[0].name, p[0].score);
   mvprintw(15, 55, "%s: %d", p[1].name, p[1].score);
+  mvprintw(17, 55, "Key bindings:");
+  mvprintw(18, 55, "q-quit, s-save");
+  mvprintw(19, 55, "Movement:");
+  mvprintw(20, 55, "LEFT: a / <-");
+  mvprintw(21, 55, "RIGHT: d / ->");
+  mvprintw(22, 55, "ACTION: SPACE / ENTER");
+
 }
 
 /* Put zeroes in the boardState matrix */
@@ -349,4 +371,26 @@ void ResetBoard() {
   for(i = 0; i < 8; i++)
     for(j = 0; j < 9; j++)
       boardState[i][j] = 0;
+}
+
+void GameIsDraw() {
+  char *msg = "It's a draw! Do you want to play another one?\n YES(y) / NO(n)";
+  int ch;
+  DrawPrompt(msg);
+  do {
+    ch = getch();
+  }while(ch != 'y' && ch != 'n');
+
+  if(ch == 'n') {
+    UpdatePlayer(p[0]);
+    UpdatePlayer(p[1]);
+    Quit();
+    endwin();
+    exit(0);
+  }
+  if(ch == 'y') {
+    ResetBoard();
+    DrawBoardLayout();
+    DrawBoard();
+  }
 }

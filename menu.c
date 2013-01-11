@@ -201,10 +201,13 @@ void SaveGame() {
   mvprintw(4, 4, "Insert the name for save file: ");
   getnstr(saveFileName, 10);
   saveFile = fopen(saveFileName, "ab");
+  if(saveFile == NULL)
+    ErrorMessage("Error at opening save file!");
   fwrite(p, sizeof(Player), 2, saveFile); 
   fwrite(curPointsPlayer, sizeof(curPointsPlayer[1]), 2, saveFile);
   fwrite(boardState, sizeof(boardState), 1, saveFile);
   fwrite(colorChoice, sizeof(colorChoice), 1, saveFile);
+  fwrite(&colsFull, sizeof(colsFull), 1, saveFile);
   noecho();
   nodelay(stdscr, TRUE);
   DrawBoardLayout();
@@ -229,6 +232,7 @@ void Load() {
   fread(&curPointsPlayer[1], sizeof(curPointsPlayer[1]), 1, saveFile);
   fread(boardState, sizeof(boardState), 1, saveFile);
   fread(colorChoice, sizeof(colorChoice), 1, saveFile);
+  fread(&colsFull, sizeof(colsFull), 1, saveFile);
   init_pair(1, COLOR_RED, COLOR_BLACK);
   init_pair(2, COLOR_GREEN, COLOR_BLACK);
   init_pair(3, COLOR_BLUE, COLOR_BLACK);
