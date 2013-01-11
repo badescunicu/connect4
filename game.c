@@ -63,8 +63,6 @@ void DrawBoard() {
   wrefresh(board);
 }
 
-
-
 void Play() {
   int c, availableRow, colChosen = 0, color = colorChoice[1];
   turn = 1;
@@ -73,11 +71,28 @@ void Play() {
     c = getch();
     PrintTime();
     PrintScore();
-    if(c == 'q')
-      break;
+    if(c == 'q') {
+      int ch;
+      DrawPrompt("Are you sure you want to quit?\n YES(y)/NO(n)");
+      do {
+        ch = getch();
+      }while(ch != 'y' && ch != 'n');
+
+      if(ch == 'y') {
+        Quit();
+        break;
+      }
+      if(ch == 'n') {
+        DrawBoardLayout();
+        DrawBoard();
+      }
+    }
     if(c == 'p') {
       int diff = Pause();
       start_time += diff;
+    }
+    if(c == 's') {
+      SaveGame();
     }
     if(c == ' ' || c == 10) {
       availableRow = GetAvailableRow(colChosen + 1);
@@ -86,10 +101,24 @@ void Play() {
         boardState[availableRow][colChosen + 1] = turn;
         DrawBoard(boardState);
         if(CheckEndOfGameFromPosition(availableRow, colChosen + 1)) {
-          mvprintw(0, 0, "%s won!", p[turn - 1].name);
+          char msg[100];
+          int ch;
+          sprintf(msg, "%s has won!\n Do you want to play again?\n YES(y)/NO(n)",
+                  p[turn - 1].name);
           curPointsPlayer[turn - 1]++;
           PrintScore();
           BlinkWinningPositions();
+          DrawPrompt(msg);
+          while((ch = getch()) != 'y' && ch != 'n');
+          if(ch == 'n') {
+            Quit();
+            break;
+          }
+          if(ch == 'y') {
+            ResetBoard();
+            DrawBoardLayout();
+            DrawBoard();
+          }
         }
         turn = 3 - turn;
         color = colorChoice[turn];
@@ -97,11 +126,11 @@ void Play() {
     }
 
     PreviewPiece(2, colChosen, color);
-    if(c == KEY_LEFT) {
+    if(c == KEY_LEFT || c == 'a') {
       colChosen = (colChosen + 6) % 7;
       PreviewPiece(2, colChosen, color);
     }
-    if(c == KEY_RIGHT) {
+    if(c == KEY_RIGHT || c == 'd') {
       colChosen = (colChosen + 1) % 7;
       PreviewPiece(2, colChosen, color);
     }
@@ -314,20 +343,10 @@ void PrintScore() {
   mvprintw(15, 55, "%s: %d", p[1].name, p[1].score);
 }
 
-int Pause() {
-  int c;
-  time_t start_pause = time(NULL), end_pause;
-  char *msg = "GAME PAUSED ---> PRESS p FOR RESUMING THE GAME",
-      *msg2 = "                                              ";
-  mvprintw(0, (maxx - strlen(msg)) / 2, "%s", msg);
-  while(1) {
-    c = getch();
-    if(c == 'p') {
-      end_pause = time(NULL);
-      mvprintw(0, (maxx - strlen(msg2)) / 2, "%s", msg2);
-      break;
-    }
-  }
-  int diff = end_pause - start_pause;
-  return diff;
+/* Put zeroes in the boardState matrix */
+void ResetBoard() {
+  int i, j;
+  for(i = 0; i < 8; i++)
+    for(j = 0; j < 9; j++)
+      boardState[i][j] = 0;
 }

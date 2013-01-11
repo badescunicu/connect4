@@ -10,12 +10,12 @@ typedef struct {
   int score;
 }Player;
 
-extern FILE *f;
+extern FILE *f, *saveFile;
 extern Player p[2];
-extern char menuList[3][20], players[2][30];
+extern char menuList[3][20], players[2][30], saveFileName[15];
 extern int maxx, maxy, boardState[8][9], colorChoice[3],
   winningPositions[2][7], curPointsPlayer[2], turn;
-extern WINDOW *board;
+extern WINDOW *board, *prompt;
 extern time_t start_time;
 
 /* Menu functions */
@@ -25,6 +25,10 @@ int InitializeMenu();
 void DrawMenu(int choice);
 void PlayerSelect();
 void DrawPickColor(int y, int colorChoice);
+int Pause();
+void SaveGame();
+void Load();
+void DrawPrompt(char *s);
 
 /* Gameplay functions */
 void DrawBoardLayout();
@@ -38,7 +42,7 @@ void AnimatePiece(int turn, int colChosen);
 int CheckEndOfGameFromPosition(int row, int col);
 void InitializeWinningPositions();
 void BlinkWinningPositions();
-int Pause();
+void ResetBoard();
 
 /* Score database functions */
 void AddPlayer(Player p);

@@ -71,9 +71,9 @@ void PlayerSelect() {
   echo();
   mvprintw(maxy / 4, maxx / 6, "Enter name for player 1: ");
   refresh();
-  getnstr(p[0].name, 30);
+  getnstr(p[0].name, 10);
   mvprintw(maxy / 4 + 2, maxx / 6, "Enter name for player 2: ");
-  getnstr(p[1].name, 30);
+  getnstr(p[1].name, 10);
 
   /* Check if player is in database */
   for(i = 0; i <= 1; i++) {
@@ -175,3 +175,84 @@ void Quit() {
   refresh();
   napms(1500);
 }
+
+int Pause() {
+  int c;
+  time_t start_pause = time(NULL), end_pause;
+  char *msg = "GAME PAUSED ---> PRESS p FOR RESUMING THE GAME",
+      *msg2 = "                                              ";
+  mvprintw(0, (maxx - strlen(msg)) / 2, "%s", msg);
+  while(1) {
+    c = getch();
+    if(c == 'p') {
+      end_pause = time(NULL);
+      mvprintw(0, (maxx - strlen(msg2)) / 2, "%s", msg2);
+      break;
+    }
+  }
+  int diff = end_pause - start_pause;
+  return diff;
+}
+
+void SaveGame() {
+  clear();
+  nodelay(stdscr, FALSE);
+  echo();
+  mvprintw(4, 4, "Insert the name for save file: ");
+  getnstr(saveFileName, 10);
+  saveFile = fopen(saveFileName, "ab");
+  fwrite(p, sizeof(Player), 2, saveFile); 
+  fwrite(curPointsPlayer, sizeof(curPointsPlayer[1]), 2, saveFile);
+  fwrite(boardState, sizeof(boardState), 1, saveFile);
+  fwrite(colorChoice, sizeof(colorChoice), 1, saveFile);
+  noecho();
+  nodelay(stdscr, TRUE);
+  DrawBoardLayout();
+  DrawBoard();
+  fclose(saveFile);
+}
+
+void Load() {
+  clear();
+  nodelay(stdscr, FALSE);
+  echo();
+  mvprintw(4, 4, "Insert the name for save file: ");
+  getnstr(saveFileName, 10);
+  noecho();
+  saveFile = fopen(saveFileName, "rb");
+  if(saveFile == NULL)
+    ErrorMessage("Error at opening save file!");
+
+  fread(&p[0], sizeof(Player), 1, saveFile);
+  fread(&p[1], sizeof(Player), 1, saveFile);
+  fread(&curPointsPlayer[0], sizeof(curPointsPlayer[0]), 1, saveFile);
+  fread(&curPointsPlayer[1], sizeof(curPointsPlayer[1]), 1, saveFile);
+  fread(boardState, sizeof(boardState), 1, saveFile);
+  fread(colorChoice, sizeof(colorChoice), 1, saveFile);
+  init_pair(1, COLOR_RED, COLOR_BLACK);
+  init_pair(2, COLOR_GREEN, COLOR_BLACK);
+  init_pair(3, COLOR_BLUE, COLOR_BLACK);
+  init_pair(4, COLOR_MAGENTA, COLOR_MAGENTA);
+  init_pair(5, COLOR_RED, COLOR_RED);
+  init_pair(6, COLOR_GREEN, COLOR_GREEN);
+  init_pair(7, COLOR_BLUE, COLOR_BLUE);
+  init_pair(8, COLOR_WHITE, COLOR_WHITE);
+
+  fclose(saveFile);
+  start_time = time(NULL);
+  DrawBoardLayout();
+  DrawBoard();
+  Play();
+}
+
+void DrawPrompt(char *s) {
+  int x, y;
+  prompt = newwin(5, 40, 5, 5);
+  getmaxyx(prompt, y, x);
+  mvwprintw(prompt, 1, 1, "%s", s); 
+  refresh();
+  touchwin(prompt);
+  wrefresh(prompt);
+  getch();
+}
+
