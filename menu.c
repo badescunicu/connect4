@@ -23,6 +23,7 @@ void Initialize() {
   init_pair(6, COLOR_GREEN, COLOR_GREEN);
   init_pair(7, COLOR_BLUE, COLOR_BLUE);
   init_pair(8, COLOR_WHITE, COLOR_WHITE);
+  init_pair(9, COLOR_CYAN, COLOR_CYAN);
 }
 
 
@@ -31,10 +32,13 @@ int InitializeMenu() {
   int c, i = 0;
   int choice = 0;
   char *s = "Press SPACE or ENTER to choose an option";
-  mvprintw(1, 0 , "Connect4");
   nodelay(stdscr, TRUE);
   DrawMenu(choice);
+  DrawTitle(0);
   while(1) {
+    refresh();
+    wrefresh(title);
+
     c = getch();
     if(c == 10 || c == ' ')
       break;
@@ -195,7 +199,9 @@ void Quit() {
   clear();
   char *msg = "Hope to see you soon, bye!";
   mvaddstr(maxy / 2, (maxx - strlen(msg)) / 2, msg);
+  DrawTitle(0);
   refresh();
+  wrefresh(title);
   napms(1500);
 }
 
@@ -222,6 +228,9 @@ void SaveGame() {
   nodelay(stdscr, FALSE);
   echo();
   mvprintw(4, 4, "Insert the name for save file: ");
+
+  DrawTitle(14);
+
   getnstr(saveFileName, 10);
   saveFile = fopen(saveFileName, "ab");
   if(saveFile == NULL)
@@ -272,8 +281,6 @@ void Load() {
   fclose(saveFile);
   start_time = time(NULL);
   start_time = start_time - difTime;
-  printw("%d", popOutActive);
-  getch();
   DrawBoardLayout();
   DrawBoard();
   Play();
@@ -301,7 +308,11 @@ void PopOutSelection() {
   attroff(A_REVERSE);
   mvprintw(7, (maxx - strlen(options[1])) / 2, options[1]);
 
+  DrawTitle(11);
+
   while(1) {
+    refresh();
+    wrefresh(title);
     c = getch();
     if(c == ' ' || c == 10) {
       break;
@@ -323,4 +334,114 @@ void PopOutSelection() {
       }
     }
   }
+}
+
+void DrawTitle(int y) {
+  title = newwin(7, 79, y, 0);
+  wattron(title, COLOR_PAIR(9));
+  int i;
+  for(i = 0; i < 5; i++) {
+    refresh();
+    wclear(title);
+    /* First Row */
+    mvwprintw(title, i - 4, 1, "********");
+    mvwprintw(title, i - 4, 11, "********");
+    mvwprintw(title, i - 4, 21, "********");
+    mvwprintw(title, i - 4, 31, "********");
+    mvwprintw(title, i - 4, 41, "********");
+    mvwprintw(title, i - 4, 51, "********");
+    mvwprintw(title, i - 4, 61, "********");
+    mvwprintw(title, i - 4, 71, "*");
+    mvwprintw(title, i - 4, 78, "*");
+
+
+    /* Second Row */
+    /* C */
+    mvwprintw(title, i - 3, 1,  "*");
+    /* O */
+    mvwprintw(title, i - 3, 11, "*");
+    mvwprintw(title, i - 3, 18, "*");
+    /* N */
+    mvwprintw(title, i - 3, 21, "*");
+    mvwprintw(title, i - 3, 28, "*");
+    /* N */
+    mvwprintw(title, i - 3, 31, "*");
+    mvwprintw(title, i - 3, 38, "*");
+    /* E */
+    mvwprintw(title, i - 3, 41, "*");
+    /* C */
+    mvwprintw(title, i - 3, 51, "*");
+    /* T */
+    mvwprintw(title, i - 3, 65, "*");
+    /* 4 */
+    mvwprintw(title, i - 3, 71, "*");
+    mvwprintw(title, i - 3, 78, "*");
+
+    /* Third Row */
+    /* C */
+    mvwprintw(title, i - 2, 1,  "*");
+    /* O */
+    mvwprintw(title, i - 2, 11, "*");
+    mvwprintw(title, i - 2, 18, "*");
+    /* N */
+    mvwprintw(title, i - 2, 21, "*");
+    mvwprintw(title, i - 2, 28, "*");
+    /* N */
+    mvwprintw(title, i - 2, 31, "*");
+    mvwprintw(title, i - 2, 38, "*");
+    /* E */
+    mvwprintw(title, i - 2, 41, "********");
+    /* C */
+    mvwprintw(title, i - 2, 51, "*");
+    /* T */
+    mvwprintw(title, i - 2, 65, "*");
+    /* 4 */
+    mvwprintw(title, i - 2, 71, "********");
+
+    /* Fourth Row */
+    /* C */
+    mvwprintw(title, i - 1, 1,  "*");
+    /* O */
+    mvwprintw(title, i - 1, 11, "*");
+    mvwprintw(title, i - 1, 18, "*");
+    /* N */
+    mvwprintw(title, i - 1, 21, "*");
+    mvwprintw(title, i - 1, 28, "*");
+    /* N */
+    mvwprintw(title, i - 1, 31, "*");
+    mvwprintw(title, i - 1, 38, "*");
+    /* E */
+    mvwprintw(title, i - 1, 41, "*");
+    /* C */
+    mvwprintw(title, i - 1, 51, "*");
+    /* T */
+    mvwprintw(title, i - 1, 65, "*");
+    /* 4 */
+    mvwprintw(title, i - 1, 78, "*");
+
+    /* Fifth Row */
+    /* C */
+    mvwprintw(title, i, 1, "********");
+    /* O */
+    mvwprintw(title, i, 11, "********");
+    /* N */
+    mvwprintw(title, i, 21, "*");
+    mvwprintw(title, i, 28, "*");
+    /* N */
+    mvwprintw(title, i, 31, "*");
+    mvwprintw(title, i, 38, "*");
+    /* E */
+    mvwprintw(title, i, 41, "********");
+    /* C */
+    mvwprintw(title, i, 51, "********");
+    /* T */
+    mvwprintw(title, i, 65, "*");
+    /* 4 */
+    mvwprintw(title, i, 78, "*");
+    napms(150);
+    refresh();
+    wrefresh(title);
+  }
+
+  wattroff(title, COLOR_PAIR(10));
 }

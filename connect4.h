@@ -31,6 +31,7 @@ void SaveGame();
 void Load();
 void DrawPrompt(char *s);
 void PopOutSelection();
+void DrawTitle(int y);
 
 /* Gameplay functions */
 void DrawBoardLayout();
