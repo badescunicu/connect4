@@ -108,6 +108,7 @@ void Play() {
         if(CheckEndOfGameFromPosition(availableRow, colChosen + 1)) {
           char msg[100];
           int ch;
+          colsFull = 0;
           sprintf(msg, "%s has won!\n Do you want to play again?\n YES(y)/NO(n)",
                   p[turn - 1].name);
           curPointsPlayer[turn - 1]++;

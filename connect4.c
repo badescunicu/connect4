@@ -3,7 +3,6 @@
 FILE *f;
 
 FILE *saveFile;
-
 Player p[2];
 WINDOW *board, *prompt;
 int maxx, maxy, boardState[8][9], winningPositions[2][7], 
