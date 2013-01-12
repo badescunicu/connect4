@@ -267,9 +267,9 @@ void PopOutSelection() {
   char options[2][30] = {"Normal", "Pop Out"};
   nodelay(stdscr, FALSE);
   attron(A_REVERSE);
-  mvprintw(3, (maxx - strlen(options[1])) / 2, options[0]);
+  mvprintw(5, (maxx - strlen(options[1])) / 2, options[0]);
   attroff(A_REVERSE);
-  mvprintw(4, (maxx - strlen(options[1])) / 2, options[1]);
+  mvprintw(7, (maxx - strlen(options[1])) / 2, options[1]);
 
   while(1) {
     c = getch();
@@ -281,14 +281,14 @@ void PopOutSelection() {
       popOutActive = (popOutActive + 1) % 2;
       if(popOutActive == 0) {
         attron(A_REVERSE);
-        mvprintw(3, (maxx - strlen(options[1])) / 2, options[0]);
+        mvprintw(5, (maxx - strlen(options[1])) / 2, options[0]);
         attroff(A_REVERSE);
-        mvprintw(4, (maxx - strlen(options[1])) / 2, options[1]);
+        mvprintw(7, (maxx - strlen(options[1])) / 2, options[1]);
       }
       else {
-        mvprintw(3, (maxx - strlen(options[1])) / 2, options[0]);
+        mvprintw(5, (maxx - strlen(options[1])) / 2, options[0]);
         attron(A_REVERSE);
-        mvprintw(4, (maxx - strlen(options[1])) / 2, options[1]);
+        mvprintw(7, (maxx - strlen(options[1])) / 2, options[1]);
         attroff(A_REVERSE);
       }
     }

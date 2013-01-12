@@ -71,6 +71,7 @@ void Play() {
     c = getch();
     PrintTime();
     PrintScore();
+
     if(c == 'q') {
       int ch;
       DrawPrompt("Are you sure you want to quit?\n YES(y)/NO(n)");
@@ -90,7 +91,7 @@ void Play() {
       }
     }
 
-    if(c == 'o' && boardState[6][colChosen + 1] == turn) {
+    if(c == 'o' && popOutActive == 1 && boardState[6][colChosen + 1] == turn) {
       if(GetAvailableRow(colChosen + 1) == 0) {
         colsFull--;
       }
@@ -302,8 +303,8 @@ void PrintTime() {
     int hours, minutes, seconds;
 
     cur_time = localtime(&t);
-    mvprintw(2, 53, "Local Time:");
-    mvprintw(3, 53, "%02d:%02d:%02d", cur_time -> tm_hour,
+    mvprintw(2, 50, "Local Time:");
+    mvprintw(3, 50, "%02d:%02d:%02d", cur_time -> tm_hour,
              cur_time -> tm_min, cur_time -> tm_sec);
 
     dif =  t - start_time;
@@ -312,8 +313,8 @@ void PrintTime() {
     minutes = dif % 60;
     hours = dif / 60;
 
-    mvprintw(15, 53, "In-game time:");
-    mvprintw(16, 53, "%02d:%02d:%02d", hours, minutes, seconds);
+    mvprintw(15, 50, "In-game time:");
+    mvprintw(16, 50, "%02d:%02d:%02d", hours, minutes, seconds);
 }
 
 void PrintScore() {
@@ -322,11 +323,11 @@ void PrintScore() {
       mvprintw(5, 51 + strlen(p[0].name) + 
                strlen(" vs ") + strlen(p[1].name), " ");
       attron(COLOR_PAIR(colorChoice[1]));
-      mvprintw(5, 49, "*");
+      mvprintw(5, 48, "*");
       attroff(COLOR_PAIR(colorChoice[1]));
       break;
     case 2:
-      mvprintw(5, 49, " ");
+      mvprintw(5, 48, " ");
       attron(COLOR_PAIR(colorChoice[2]));
       mvprintw(5, 51 + strlen(p[0].name) + 
                strlen(" vs ") + strlen(p[1].name), "*");
@@ -343,14 +344,19 @@ void PrintScore() {
   mvprintw(9, 50, "%s: %d", p[1].name, curPointsPlayer[1]);
 
   /* print total score for each player */
-  mvprintw(11, 53, "Total points:");
-  mvprintw(12, 53, "%s: %d", p[0].name, p[0].score);
-  mvprintw(13, 53, "%s: %d", p[1].name, p[1].score);
-  mvprintw(18, 53, "Key bindings:");
-  mvprintw(19, 53, "LEFT: a / <-");
-  mvprintw(20, 53, "RIGHT: d / ->");
-  mvprintw(21, 53, "ACTION: SPACE / ENTER");
-  mvprintw(22, 53, "SAVE:s   QUIT:q  PAUSE:p");
+  mvprintw(11, 50, "Total points:");
+  mvprintw(12, 50, "%s: %d", p[0].name, p[0].score);
+  mvprintw(13, 50, "%s: %d", p[1].name, p[1].score);
+  if(popOutActive == 1) {
+    mvprintw(18, 50, "Press 'o' to Pop Out!");
+  }
+  else {
+    mvprintw(18, 50, "Key bindings:");
+  }
+  mvprintw(19, 50, "LEFT: a / <-");
+  mvprintw(20, 50, "RIGHT: d / ->");
+  mvprintw(21, 50, "ACTION: SPACE / ENTER");
+  mvprintw(22, 50, "SAVE:s   QUIT:q  PAUSE:p");
 }
 
 /* Put zeroes in the boardState matrix */
