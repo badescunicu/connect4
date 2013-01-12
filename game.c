@@ -90,6 +90,16 @@ void Play() {
       }
     }
 
+    if(c == 'o' && boardState[6][colChosen + 1] == turn) {
+      if(GetAvailableRow(colChosen + 1) == 0) {
+        colsFull--;
+      }
+      PopOut(colChosen);
+      DrawBoard();
+      turn = 3 - turn;
+      color = colorChoice[turn];
+    }
+
     if(c == 'p') {
       int diff = Pause();
       start_time += diff;
@@ -374,7 +384,7 @@ void ResetBoard() {
 }
 
 void GameIsDraw() {
-  char *msg = "It's a draw! Do you want to play another one?\n YES(y) / NO(n)";
+  char *msg = "It's a draw!\n Do you want to play another one?\n YES(y) / NO(n)";
   int ch;
   DrawPrompt(msg);
   do {
@@ -394,3 +404,13 @@ void GameIsDraw() {
     DrawBoard();
   }
 }
+
+void PopOut(int colChosen) {
+  int i;
+  for(i = 6; i >= 1; i--)
+    boardState[i][colChosen + 1] = boardState[i - 1][colChosen + 1];
+}
+
+
+
+

@@ -44,6 +44,7 @@ void InitializeWinningPositions();
 void BlinkWinningPositions();
 void ResetBoard();
 void GameIsDraw();
+void PopOut(int colChosen);
 
 /* Score database functions */
 void AddPlayer(Player p);
