@@ -319,28 +319,28 @@ void PrintTime() {
 void PrintScore() {
   switch(turn) {
     case 1:
-      mvprintw(5, 54 + strlen(p[0].name) + 
+      mvprintw(5, 51 + strlen(p[0].name) + 
                strlen(" vs ") + strlen(p[1].name), " ");
       attron(COLOR_PAIR(colorChoice[1]));
-      mvprintw(5, 51, "*");
+      mvprintw(5, 49, "*");
       attroff(COLOR_PAIR(colorChoice[1]));
       break;
     case 2:
-      mvprintw(5, 51, " ");
+      mvprintw(5, 49, " ");
       attron(COLOR_PAIR(colorChoice[2]));
-      mvprintw(5, 54 + strlen(p[0].name) + 
+      mvprintw(5, 51 + strlen(p[0].name) + 
                strlen(" vs ") + strlen(p[1].name), "*");
       attroff(COLOR_PAIR(colorChoice[2]));
       break;
   }
 
   attron(A_BOLD);
-  mvprintw(5, 53, "%s VS %s", p[0].name, p[1].name);
+  mvprintw(5, 50, "%s VS %s", p[0].name, p[1].name);
   attroff(A_BOLD);
   /* print current score */
-  mvprintw(7, 53, "Current points:");
-  mvprintw(8, 53, "%s: %d", p[0].name, curPointsPlayer[0]);
-  mvprintw(9, 53, "%s: %d", p[1].name, curPointsPlayer[1]);
+  mvprintw(7, 50, "Current points:");
+  mvprintw(8, 50, "%s: %d", p[0].name, curPointsPlayer[0]);
+  mvprintw(9, 50, "%s: %d", p[1].name, curPointsPlayer[1]);
 
   /* print total score for each player */
   mvprintw(11, 53, "Total points:");
