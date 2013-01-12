@@ -20,7 +20,7 @@ void Initialize() {
 int InitializeMenu() {
   int c, i = 0;
   int choice = 0;
-  char *s = "Press SPACE or ENTER to choose the option";
+  char *s = "Press SPACE or ENTER to choose an option";
   mvprintw(1, 0 , "Connect4");
   nodelay(stdscr, TRUE);
   DrawMenu(choice);
@@ -258,5 +258,40 @@ void DrawPrompt(char *s) {
   touchwin(prompt);
   wrefresh(prompt);
   getch();
+}
+
+void PopOutSelection() {
+  clear();
+  mvprintw(1, (maxx - strlen("Choose a gamestyle")) / 2, "Choose a gamestyle");
+  int c;
+  char options[2][30] = {"Normal", "Pop Out"};
+  nodelay(stdscr, FALSE);
+  attron(A_REVERSE);
+  mvprintw(3, (maxx - strlen(options[1])) / 2, options[0]);
+  attroff(A_REVERSE);
+  mvprintw(4, (maxx - strlen(options[1])) / 2, options[1]);
+
+  while(1) {
+    c = getch();
+    if(c == ' ' || c == 10) {
+      break;
+    }
+    
+    if(c == KEY_DOWN || c == KEY_UP) {
+      popOutActive = (popOutActive + 1) % 2;
+      if(popOutActive == 0) {
+        attron(A_REVERSE);
+        mvprintw(3, (maxx - strlen(options[1])) / 2, options[0]);
+        attroff(A_REVERSE);
+        mvprintw(4, (maxx - strlen(options[1])) / 2, options[1]);
+      }
+      else {
+        mvprintw(3, (maxx - strlen(options[1])) / 2, options[0]);
+        attron(A_REVERSE);
+        mvprintw(4, (maxx - strlen(options[1])) / 2, options[1]);
+        attroff(A_REVERSE);
+      }
+    }
+  }
 }
 

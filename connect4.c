@@ -6,7 +6,8 @@ FILE *saveFile;
 Player p[2];
 WINDOW *board, *prompt;
 int maxx, maxy, boardState[8][9], winningPositions[2][7], 
-    colorChoice[3] = {0}, curPointsPlayer[2], turn, colsFull = 0;
+    colorChoice[3] = {0}, curPointsPlayer[2], turn, colsFull = 0,
+    popOutActive = 0;
 char menuList[3][20] = {"New game", "Load saved game", "Quit"},
      players[2][30];
 
@@ -21,6 +22,7 @@ int main() {
   switch(chosen) {
     case 0: /* New game */
       start_time = time(NULL);
+      PopOutSelection();
       PlayerSelect();
       DrawBoardLayout();
       Play();

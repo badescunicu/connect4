@@ -116,29 +116,8 @@ void Play() {
         boardState[availableRow][colChosen + 1] = turn;
         DrawBoard(boardState);
         if(CheckEndOfGameFromPosition(availableRow, colChosen + 1)) {
-          char msg[100];
-          int ch;
-          colsFull = 0;
-          sprintf(msg, "%s has won!\n Do you want to play again?\n YES(y)/NO(n)",
-                  p[turn - 1].name);
-          curPointsPlayer[turn - 1]++;
-          p[turn - 1].score++;
-          PrintScore();
-          BlinkWinningPositions();
-          DrawPrompt(msg);
-          while((ch = getch()) != 'y' && ch != 'n');
-          if(ch == 'n') {
-            UpdatePlayer(p[0]);
-            UpdatePlayer(p[1]);
-            Quit();
-            break;
-          }
-          if(ch == 'y') {
-            ResetBoard();
-            DrawBoardLayout();
-            DrawBoard();
-          }
-        }
+          GameOver();
+        } 
         turn = 3 - turn;
         color = colorChoice[turn];
         if(availableRow == 1) {
@@ -255,10 +234,11 @@ void InitializeWinningPositions() {
 }
 
 void BlinkWinningPositions() {
-  int i, blinked = 0;
+  int i, blinked = 0, prevValue;
   while(blinked < 5) {
     i = 0;
     while(i < 7 && winningPositions[0][i] != 0) {
+      prevValue = boardState[winningPositions[0][i]][winningPositions[1][i]];
       boardState[winningPositions[0][i]][winningPositions[1][i]] = 3;
       i++;
     }
@@ -266,7 +246,7 @@ void BlinkWinningPositions() {
     napms(150);
     i = 0;
     while(i < 7 && winningPositions[0][i] != 0) {
-      boardState[winningPositions[0][i]][winningPositions[1][i]] = turn;
+      boardState[winningPositions[0][i]][winningPositions[1][i]] = prevValue;
       i++;
     }
     DrawBoard(boardState);
@@ -322,8 +302,8 @@ void PrintTime() {
     int hours, minutes, seconds;
 
     cur_time = localtime(&t);
-    mvprintw(2, 55, "Local Time:");
-    mvprintw(3, 55, "%02d:%02d:%02d", cur_time -> tm_hour,
+    mvprintw(2, 53, "Local Time:");
+    mvprintw(3, 53, "%02d:%02d:%02d", cur_time -> tm_hour,
              cur_time -> tm_min, cur_time -> tm_sec);
 
     dif =  t - start_time;
@@ -332,47 +312,45 @@ void PrintTime() {
     minutes = dif % 60;
     hours = dif / 60;
 
-    mvprintw(15, 55, "In-game time:");
-    mvprintw(16, 55, "%02d:%02d:%02d", hours, minutes, seconds);
+    mvprintw(15, 53, "In-game time:");
+    mvprintw(16, 53, "%02d:%02d:%02d", hours, minutes, seconds);
 }
 
 void PrintScore() {
   switch(turn) {
     case 1:
-      mvprintw(5, 56 + strlen(p[0].name) + 
+      mvprintw(5, 54 + strlen(p[0].name) + 
                strlen(" vs ") + strlen(p[1].name), " ");
       attron(COLOR_PAIR(colorChoice[1]));
-      mvprintw(5, 53, "*");
+      mvprintw(5, 51, "*");
       attroff(COLOR_PAIR(colorChoice[1]));
       break;
     case 2:
-      mvprintw(5, 53, " ");
+      mvprintw(5, 51, " ");
       attron(COLOR_PAIR(colorChoice[2]));
-      mvprintw(5, 56 + strlen(p[0].name) + 
+      mvprintw(5, 54 + strlen(p[0].name) + 
                strlen(" vs ") + strlen(p[1].name), "*");
       attroff(COLOR_PAIR(colorChoice[2]));
       break;
   }
 
-
   attron(A_BOLD);
-  mvprintw(5, 55, "%s VS %s", p[0].name, p[1].name);
+  mvprintw(5, 53, "%s VS %s", p[0].name, p[1].name);
   attroff(A_BOLD);
   /* print current score */
-  mvprintw(7, 55, "Current points:");
-  mvprintw(8, 55, "%s: %d", p[0].name, curPointsPlayer[0]);
-  mvprintw(9, 55, "%s: %d", p[1].name, curPointsPlayer[1]);
+  mvprintw(7, 53, "Current points:");
+  mvprintw(8, 53, "%s: %d", p[0].name, curPointsPlayer[0]);
+  mvprintw(9, 53, "%s: %d", p[1].name, curPointsPlayer[1]);
 
   /* print total score for each player */
-  mvprintw(11, 55, "Total points:");
-  mvprintw(12, 55, "%s: %d", p[0].name, p[0].score);
-  mvprintw(13, 55, "%s: %d", p[1].name, p[1].score);
-  mvprintw(18, 55, "Key bindings:");
-  mvprintw(19, 55, "LEFT: a / <-");
-  mvprintw(20, 55, "RIGHT: d / ->");
-  mvprintw(21, 55, "ACTION: SPACE / ENTER");
-  mvprintw(22, 55, "SAVE: s   QUIT: q");
-
+  mvprintw(11, 53, "Total points:");
+  mvprintw(12, 53, "%s: %d", p[0].name, p[0].score);
+  mvprintw(13, 53, "%s: %d", p[1].name, p[1].score);
+  mvprintw(18, 53, "Key bindings:");
+  mvprintw(19, 53, "LEFT: a / <-");
+  mvprintw(20, 53, "RIGHT: d / ->");
+  mvprintw(21, 53, "ACTION: SPACE / ENTER");
+  mvprintw(22, 53, "SAVE:s   QUIT:q  PAUSE:p");
 }
 
 /* Put zeroes in the boardState matrix */
@@ -406,11 +384,83 @@ void GameIsDraw() {
 }
 
 void PopOut(int colChosen) {
-  int i;
-  for(i = 6; i >= 1; i--)
-    boardState[i][colChosen + 1] = boardState[i - 1][colChosen + 1];
+  int i, winningCombinations[2] = {0};
+  for(i = 6; i >= 1; i--) {
+    if(boardState[i][colChosen + 1] != 0) {
+      boardState[i][colChosen + 1] = 0;
+      //if(i == 6) {
+      DrawBoard();
+      napms(180);
+      //}
+      boardState[i][colChosen + 1] = boardState[i - 1][colChosen + 1];
+    }
+  }
+
+  for(i = 6; i >= 1; i--) {
+    if(boardState[i][colChosen + 1] != 0) {
+      if(CheckEndOfGameFromPosition(i, colChosen + 1)) {
+        BlinkWinningPositions();
+        winningCombinations[boardState[i][colChosen + 1] - 1]++;
+      }
+    }
+  }
+
+  if(winningCombinations[0] > 0 && winningCombinations[1] > 0) {
+    GameIsDraw();
+  }
+  else 
+    for(i = 0; i < 2; i++) {
+      if(winningCombinations[i] > 0) {
+      char msg[100];
+        int ch;
+        colsFull = 0;
+        sprintf(msg, "%s has won!\n Do you want to play again?\n YES(y)/NO(n)",
+                p[i].name);
+        curPointsPlayer[i]++;
+        p[i].score++;
+        PrintScore();
+        DrawPrompt(msg);
+        while((ch = getch()) != 'y' && ch != 'n');
+        if(ch == 'n') {
+          UpdatePlayer(p[0]);
+          UpdatePlayer(p[1]);
+          Quit();
+          endwin();
+          exit(0);
+        }
+        if(ch == 'y') {
+          ResetBoard();
+          DrawBoardLayout();
+          DrawBoard();
+        }
+      }
+    }
 }
 
-
-
+/* Update variables and print message when the game is over */
+void GameOver() {
+  char msg[100];
+  int ch;
+  colsFull = 0;
+  sprintf(msg, "%s has won!\n Do you want to play again?\n YES(y)/NO(n)",
+          p[turn - 1].name);
+  curPointsPlayer[turn - 1]++;
+  p[turn - 1].score++;
+  PrintScore();
+  BlinkWinningPositions();
+  DrawPrompt(msg);
+  while((ch = getch()) != 'y' && ch != 'n');
+  if(ch == 'n') {
+    UpdatePlayer(p[0]);
+    UpdatePlayer(p[1]);
+    Quit();
+    endwin();
+    exit(0);
+  }
+  if(ch == 'y') {
+    ResetBoard();
+    DrawBoardLayout();
+    DrawBoard();
+  }
+}
 

@@ -14,7 +14,8 @@ extern FILE *f, *saveFile;
 extern Player p[2];
 extern char menuList[3][20], players[2][30], saveFileName[15];
 extern int maxx, maxy, boardState[8][9], colorChoice[3],
-  winningPositions[2][7], curPointsPlayer[2], turn, colsFull;
+  winningPositions[2][7], curPointsPlayer[2], turn, colsFull,
+  popOutActive;
 extern WINDOW *board, *prompt;
 extern time_t start_time;
 
@@ -29,6 +30,7 @@ int Pause();
 void SaveGame();
 void Load();
 void DrawPrompt(char *s);
+void PopOutSelection();
 
 /* Gameplay functions */
 void DrawBoardLayout();
@@ -45,6 +47,8 @@ void BlinkWinningPositions();
 void ResetBoard();
 void GameIsDraw();
 void PopOut(int colChosen);
+void GameOver();
+void PopOutSelection();
 
 /* Score database functions */
 void AddPlayer(Player p);
