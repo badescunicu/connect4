@@ -15,7 +15,17 @@ void Initialize() {
   curs_set(0);
   keypad(stdscr, TRUE);
   start_color();
+  init_pair(1, COLOR_RED, COLOR_BLACK);
+  init_pair(2, COLOR_GREEN, COLOR_BLACK);
+  init_pair(3, COLOR_BLUE, COLOR_BLACK);
+  init_pair(4, COLOR_MAGENTA, COLOR_MAGENTA);
+  init_pair(5, COLOR_RED, COLOR_RED);
+  init_pair(6, COLOR_GREEN, COLOR_GREEN);
+  init_pair(7, COLOR_BLUE, COLOR_BLUE);
+  init_pair(8, COLOR_WHITE, COLOR_WHITE);
 }
+
+
 
 int InitializeMenu() {
   int c, i = 0;
@@ -63,7 +73,6 @@ void DrawMenu(int choice) {
 
 /* Select name and color for both players */
 void PlayerSelect() {
-  /* Initialize start_time after hitting new game" */
   char *msg1 = "Choose your color, ";
   int c, i;
   nodelay(stdscr, FALSE);
@@ -112,8 +121,31 @@ void PlayerSelect() {
   DrawPickColor(8, colorChoice[2]);
   while(1) {
     c = getch();
-    if(c == ' ' || c == 10)
+    if(c == ' ' || c == 10) {
+      if(colorChoice[2] == colorChoice[1]) {
+        char msg[100];
+        sprintf(msg, "%s are you sure you want \
+to play with the same color as %s?", p[1].name, p[0].name);
+        mvprintw(14, (maxx - strlen(msg)) / 2, "%s", msg);
+        mvprintw(15, (maxx - strlen("YES(y) / NO(n)")) / 2, "YES(y) / NO(n)");
+        int ch;
+        do {
+          ch = getch();
+        }while(ch != 'y' && ch != 'n');
+        
+        if(ch == 'y')
+          break;
+        else {
+          DrawPickColor(8, colorChoice[2]);
+          mvprintw(14, 0, "                                         \
+                                               ");
+          mvprintw(15, (maxx - strlen("YES(y) / NO(n)")) / 2, "              ");
+        }
+      }
+    else
       break;
+    }
+
     if(c == KEY_LEFT) {
       colorChoice[2] = (colorChoice[2] + 2 ) % 3;
       DrawPickColor(8, colorChoice[2]);
@@ -149,15 +181,6 @@ void DrawPickColor(int y, int colorChoice) {
       mvaddch(y, maxx - 13, '*');
       break;
   }
-  init_pair(1, COLOR_RED, COLOR_BLACK);
-  init_pair(2, COLOR_GREEN, COLOR_BLACK);
-  init_pair(3, COLOR_BLUE, COLOR_BLACK);
-  init_pair(4, COLOR_MAGENTA, COLOR_MAGENTA);
-  init_pair(5, COLOR_RED, COLOR_RED);
-  init_pair(6, COLOR_GREEN, COLOR_GREEN);
-  init_pair(7, COLOR_BLUE, COLOR_BLUE);
-  init_pair(8, COLOR_WHITE, COLOR_WHITE);
-
   attrset(COLOR_PAIR(1));
   mvprintw(y, 7, "RED");
   attrset(COLOR_PAIR(2));
@@ -208,6 +231,8 @@ void SaveGame() {
   fwrite(boardState, sizeof(boardState), 1, saveFile);
   fwrite(colorChoice, sizeof(colorChoice), 1, saveFile);
   fwrite(&colsFull, sizeof(colsFull), 1, saveFile);
+  fwrite(&difTime, sizeof(int), 1, saveFile);
+  fwrite(&popOutActive, sizeof(int), 1, saveFile);
   noecho();
   nodelay(stdscr, TRUE);
   DrawBoardLayout();
@@ -233,6 +258,9 @@ void Load() {
   fread(boardState, sizeof(boardState), 1, saveFile);
   fread(colorChoice, sizeof(colorChoice), 1, saveFile);
   fread(&colsFull, sizeof(colsFull), 1, saveFile);
+  fread(&difTime, sizeof(int), 1, saveFile);
+  fread(&popOutActive, sizeof(int), 1, saveFile);
+
   init_pair(1, COLOR_RED, COLOR_BLACK);
   init_pair(2, COLOR_GREEN, COLOR_BLACK);
   init_pair(3, COLOR_BLUE, COLOR_BLACK);
@@ -241,9 +269,11 @@ void Load() {
   init_pair(6, COLOR_GREEN, COLOR_GREEN);
   init_pair(7, COLOR_BLUE, COLOR_BLUE);
   init_pair(8, COLOR_WHITE, COLOR_WHITE);
-
   fclose(saveFile);
   start_time = time(NULL);
+  start_time = start_time - difTime;
+  printw("%d", popOutActive);
+  getch();
   DrawBoardLayout();
   DrawBoard();
   Play();
@@ -294,4 +324,3 @@ void PopOutSelection() {
     }
   }
 }
-

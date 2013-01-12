@@ -15,8 +15,8 @@ extern Player p[2];
 extern char menuList[3][20], players[2][30], saveFileName[15];
 extern int maxx, maxy, boardState[8][9], colorChoice[3],
   winningPositions[2][7], curPointsPlayer[2], turn, colsFull,
-  popOutActive;
-extern WINDOW *board, *prompt;
+  popOutActive, difTime;
+extern WINDOW *board, *prompt, *title;
 extern time_t start_time;
 
 /* Menu functions */

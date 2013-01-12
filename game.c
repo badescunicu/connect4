@@ -107,6 +107,8 @@ void Play() {
     }
 
     if(c == 's') {
+      time_t t = time(NULL);
+      difTime = t - start_time;
       SaveGame();
     }
 
@@ -309,8 +311,8 @@ void PrintTime() {
 
     dif =  t - start_time;
     seconds = dif % 60;
-    dif = dif / 60;
-    minutes = dif % 60;
+    dif= dif / 60;
+    minutes = dif% 60;
     hours = dif / 60;
 
     mvprintw(15, 50, "In-game time:");
@@ -356,7 +358,7 @@ void PrintScore() {
   mvprintw(19, 50, "LEFT: a / <-");
   mvprintw(20, 50, "RIGHT: d / ->");
   mvprintw(21, 50, "ACTION: SPACE / ENTER");
-  mvprintw(22, 50, "SAVE:s   QUIT:q  PAUSE:p");
+  mvprintw(22, 50, "SAVE:s  QUIT:q  PAUSE:p");
 }
 
 /* Put zeroes in the boardState matrix */
@@ -394,10 +396,8 @@ void PopOut(int colChosen) {
   for(i = 6; i >= 1; i--) {
     if(boardState[i][colChosen + 1] != 0) {
       boardState[i][colChosen + 1] = 0;
-      //if(i == 6) {
       DrawBoard();
       napms(180);
-      //}
       boardState[i][colChosen + 1] = boardState[i - 1][colChosen + 1];
     }
   }
@@ -469,4 +469,3 @@ void GameOver() {
     DrawBoard();
   }
 }
-
