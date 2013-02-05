@@ -13,6 +13,7 @@ make build
 make run
 ```
 
-Screenshots:
+###Screenshots:
+
 ![screen1](http://img822.imageshack.us/img822/2540/rszscreen1.png)
 ![screen2](http://img72.imageshack.us/img72/2241/rszscreen3.png)
